@@ -33,13 +33,16 @@ import backtrader.filters as btfilters
 def runstrat():
     args = parse_args()
 
-    # Create a cerebro entity
+    # 1.Create a cerebro entity
+    # 1.创建一个cerebro实体（ cerebro - brain的意思）
     cerebro = bt.Cerebro(stdstats=False)
 
-    # Add a strategy
+    # 2.Add a strategy
+    # 2.添加一个测量
     cerebro.addstrategy(bt.Strategy)
 
-    # Get the dates from the args
+    # 3.Get the dates from the args
+    # 3.从args中获取fromdate和todate,并且进行format
     fromdate = datetime.datetime.strptime(args.fromdate, '%Y-%m-%d')
     todate = datetime.datetime.strptime(args.todate, '%Y-%m-%d')
 
@@ -48,20 +51,25 @@ def runstrat():
         fromdate=fromdate,
         todate=todate)
 
-    # Add the resample data instead of the original
+    # 4.Add the resample data instead of the original
+    # 4.添加采样数据（限定了fromdate和todate)
     cerebro.adddata(data)
 
-    # Add a simple moving average if requirested
+    # 5.Add a simple moving average if requirested
+    # 5.添加一个简单的btind.SMA,其中args.period是SMA的参数
     cerebro.addindicator(btind.SMA, period=args.period)
 
-    # Add a writer with CSV
+    # 6.Add a writer with CSV
+    # 6.把结果写入args.wrcsv
     if args.writer:
         cerebro.addwriter(bt.WriterFile, csv=args.wrcsv)
 
-    # Run over everything
+    # 7.Run over everything
+    # 7.跑数据
     cerebro.run()
 
-    # Plot if requested
+    # 8.Plot if requested
+    # 8.plot
     if args.plot:
         cerebro.plot(style='bar', numfigs=args.numfigs, volume=False)
 
