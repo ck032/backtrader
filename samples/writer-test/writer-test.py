@@ -52,6 +52,7 @@ class LongShortStrategy(bt.Strategy):
         pass
 
     def log(self, txt, dt=None):
+        # 记录日志
         if self.p.printout:
             dt = dt or self.data.datetime[0]
             dt = bt.num2date(dt)
@@ -64,6 +65,7 @@ class LongShortStrategy(bt.Strategy):
         # Create SMA on 2nd data
         sma = btind.MovAv.SMA(self.data, period=self.p.period)
         # Create a CrossOver Signal from close an moving average
+        # 利用：1.close 2.SMA的值 创建CrossOVer信号
         self.signal = btind.CrossOver(self.data.close, sma)
         self.signal.csv = self.p.csvcross
 
