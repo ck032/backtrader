@@ -44,6 +44,7 @@ class PandasDataOptix(btfeeds.PandasData):
 
 class StrategyOptix(bt.Strategy):
 
+    # 单独打印多出来的列,直接类似于data-pandas中的调用不可行
     def next(self):
         print('%03d %f %f, %f' % (
             len(self),

@@ -45,6 +45,7 @@ def runstrat():
     skiprows = 1 if args.noheaders else 0
     header = None if args.noheaders else 0
 
+    # 利用pandas读入csv，并且传给bt.feeds.PandasData，用来适用于模型
     dataframe = pandas.read_csv(
         datapath,
         skiprows=skiprows,
