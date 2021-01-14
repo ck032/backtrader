@@ -41,6 +41,7 @@ class St1(bt.SignalStrategy):
 
 
 class StFetcher(object):
+    # 策略对比
     _STRATS = [St0, St1]
 
     def __new__(cls, *args, **kwargs):
@@ -57,10 +58,12 @@ def runstrat(pargs=None):
     data = bt.feeds.BacktraderCSVData(dataname=args.data)
     cerebro.adddata(data)
 
+    # 添加分析模块，策略优化模块
     cerebro.addanalyzer(bt.analyzers.Returns)
     cerebro.optstrategy(StFetcher, idx=[0, 1])
     results = cerebro.run(maxcpus=args.maxcpus, optreturn=args.optreturn)
 
+    # 获取分析结果
     strats = [x[0] for x in results]  # flatten the result
     for i, strat in enumerate(strats):
         rets = strat.analyzers.returns.get_analysis()
