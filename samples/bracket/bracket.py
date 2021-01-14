@@ -143,6 +143,8 @@ def runstrat(args=None):
     cerebro.adddata(data0)
 
     # Broker
+    # bracket - 括号,在此处引申为传参的意思
+    # 下面的这些都是可以通过传参，传入到程序中
     cerebro.broker = bt.brokers.BackBroker(**eval('dict(' + args.broker + ')'))
 
     # Sizer
