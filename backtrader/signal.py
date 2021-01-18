@@ -25,7 +25,7 @@ import backtrader as bt
 
 (
 
-    SIGNAL_NONE,
+    SIGNAL_NONE,            # 0
     SIGNAL_LONGSHORT,
     SIGNAL_LONG,
     SIGNAL_LONG_INV,
@@ -38,9 +38,9 @@ import backtrader as bt
     SIGNAL_LONGEXIT_ANY,
     SIGNAL_SHORTEXIT,
     SIGNAL_SHORTEXIT_INV,
-    SIGNAL_SHORTEXIT_ANY,
+    SIGNAL_SHORTEXIT_ANY,  # 13
 
-) = range(14)
+) = range(14) # 0 - 13
 
 
 SignalTypes = [

@@ -27,6 +27,7 @@ import datetime
 
 import backtrader as bt
 
+# Calmar比率表示基金的收益率与基金阶段最大回撤的比率,也可以成为单位回撤收益率
 
 class St(bt.SignalStrategy):
     params = (
@@ -34,7 +35,7 @@ class St(bt.SignalStrategy):
 
     def __init__(self):
         ma1, ma2, = bt.ind.SMA(period=15), bt.ind.SMA(period=50)
-        self.signal_add(bt.signal.SIGNAL_LONG, bt.ind.CrossOver(ma1, ma2))
+        self.signal_add(bt.signal.SIGNAL_LONG, bt.ind.CrossOver(ma1, ma2)) # bt.signal.SIGNAL_LONG = 2,第2个信号
 
     def next2(self):
         pass
@@ -62,7 +63,10 @@ def runstrat(args=None):
     # Broker
     cerebro.broker = bt.brokers.BackBroker(**eval('dict(' + args.broker + ')'))
 
+    # 添加analyzer
+    cerebro.addanalyzer(bt.analyzers.TradeAnalyzer)
     cerebro.addanalyzer(bt.analyzers.Calmar)
+
     # Sizer
     cerebro.addsizer(bt.sizers.FixedSize, **eval('dict(' + args.sizer + ')'))
 
@@ -70,10 +74,17 @@ def runstrat(args=None):
     cerebro.addstrategy(St, **eval('dict(' + args.strat + ')'))
 
     # Execute
-    st0 = cerebro.run(**eval('dict(' + args.cerebro + ')'))[0]
+    st0 = cerebro.run(**eval('dict(' + args.cerebro + ')'))[0]  # 第1个strategy
     i = 1
+
+    # 分析-1
     for k, v in st0.analyzers.calmar.get_analysis().items():
-        print(i, ': '.join((str(k), str(v))))
+        print(i, ': '.join((str(k)[:10], str(v))))
+        i += 1
+
+    # 分析-2
+    for k,v in st0.analyzers.tradeanalyzer.get_analysis().items():
+        print(i, ': '.join((str(k)[:10], str(v))))
         i += 1
 
     if args.plot:  # Plot if requested to
