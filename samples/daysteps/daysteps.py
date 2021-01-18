@@ -66,6 +66,7 @@ class St(bt.Strategy):
         print(','.join(txtfields))
 
         if len(self.data) > self.lcontrol:
+            # 我可以在开盘时发出购买订单
             print('- I could issue a buy order during the Opening')
 
         self.lcontrol = len(self.data)
