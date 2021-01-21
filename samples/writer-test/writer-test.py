@@ -40,7 +40,7 @@ class LongShortStrategy(bt.Strategy):
     params = dict(
         period=15,
         stake=1,
-        printout=False,
+        printout=True,
         onlylong=False,
         csvcross=False,
     )
@@ -66,21 +66,26 @@ class LongShortStrategy(bt.Strategy):
         sma = btind.MovAv.SMA(self.data, period=self.p.period)
         # Create a CrossOver Signal from close an moving average
         # 利用：1.close 2.SMA的值 创建CrossOVer信号
+        # 收盘价上穿N日均线策略，发出买入信号
         self.signal = btind.CrossOver(self.data.close, sma)
         self.signal.csv = self.p.csvcross
 
     def next(self):
+        # 1.如果有未决订单，不允许产生新的订单
         if self.orderid:
             return  # if an order is active, no new orders are allowed
 
+        # 2.买入信号
         if self.signal > 0.0:  # cross upwards
+            # 如果仓位不为空
             if self.position:
                 self.log('CLOSE SHORT , %.2f' % self.data.close[0])
                 self.close()
 
             self.log('BUY CREATE , %.2f' % self.data.close[0])
-            self.buy(size=self.p.stake)
+            self.buy(size=self.p.stake) # stake是几手的意思
 
+        # 3.卖出信号
         elif self.signal < 0.0:
             if self.position:
                 self.log('CLOSE LONG , %.2f' % self.data.close[0])
@@ -91,25 +96,37 @@ class LongShortStrategy(bt.Strategy):
                 self.sell(size=self.p.stake)
 
     def notify_order(self, order):
+        # bt.Order.Submitted - 订单提交
+        # bt.Order.Accepted - 订单接受
         if order.status in [bt.Order.Submitted, bt.Order.Accepted]:
-            return  # Await further notifications
+            return  # Await further notifications 等待进一步的notifications
 
+        # order.Completed -订单完成
         if order.status == order.Completed:
+            # 买单
             if order.isbuy():
                 buytxt = 'BUY COMPLETE, %.2f' % order.executed.price
                 self.log(buytxt, order.executed.dt)
+            # 卖单
             else:
                 selltxt = 'SELL COMPLETE, %.2f' % order.executed.price
                 self.log(selltxt, order.executed.dt)
 
+        # order.Expired - 订单失效
+        # order.Canceled - 订单取消
+        # order.Margin - 保证金不足
         elif order.status in [order.Expired, order.Canceled, order.Margin]:
             self.log('%s ,' % order.Status[order.status])
             pass  # Simply log
 
         # Allow new orders
+        # 此时，没有了未决订单，设置self.orderid=None，允许订单
         self.orderid = None
 
     def notify_trade(self, trade):
+        # 交易关闭
+        # pnl - profit and loss 利润和损失，收益
+        # pnlcomm - 收益 - commission（佣金，手续费）：净收益
         if trade.isclosed:
             self.log('TRADE PROFIT, GROSS %.2f, NET %.2f' %
                      (trade.pnl, trade.pnlcomm))
@@ -148,6 +165,7 @@ def runstrategy():
     cerebro.broker.setcash(args.cash)
 
     # Add the commission - only stocks like a for each operation
+    # 设置佣金
     cerebro.broker.setcommission(commission=args.comm,
                                  mult=args.mult,
                                  margin=args.margin)
@@ -183,28 +201,28 @@ def parse_args():
                         help='Period to apply to the Simple Moving Average')
 
     parser.add_argument('--onlylong', '-ol', action='store_true',
-                        help='Do only long operations')
+                        help='Do only long operations')  # 只做长线操作
 
     parser.add_argument('--writercsv', '-wcsv', action='store_true',
                         help='Tell the writer to produce a csv stream')
 
     parser.add_argument('--csvcross', action='store_true',
-                        help='Output the CrossOver signals to CSV')
+                        help='Output the CrossOver signals to CSV')  # action='store_true'，只要运行时该变量有传参就将该变量设为True
 
     parser.add_argument('--cash', default=100000, type=int,
                         help='Starting Cash')
 
     parser.add_argument('--comm', default=2, type=float,
-                        help='Commission for operation')
+                        help='Commission for operation')  # 佣金率
 
     parser.add_argument('--mult', default=10, type=int,
-                        help='Multiplier for futures')
+                        help='Multiplier for futures') # 期货乘数
 
     parser.add_argument('--margin', default=2000.0, type=float,
-                        help='Margin for each future')
+                        help='Margin for each future')  # 每笔期货的保证金金额
 
     parser.add_argument('--stake', default=1, type=int,
-                        help='Stake to apply in each operation')
+                        help='Stake to apply in each operation')  # 买几手，默认1手
 
     parser.add_argument('--plot', '-p', action='store_true',
                         help='Plot the read data')
