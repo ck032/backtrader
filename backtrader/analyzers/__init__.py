@@ -24,7 +24,7 @@ from __future__ import (absolute_import, division, print_function,
 # The modules below should/must define __all__ with the objects wishes
 # or prepend an "_" (underscore) to private classes/variables
 
-from .annualreturn import *
+from .annualreturn import *  # AnnualReturn - 年化收益
 from .drawdown import *
 from .timereturn import *
 from .sharpe import *

@@ -241,10 +241,10 @@ class Strategy(with_metaclass(MetaStrategy, StrategyBase)):
         return self._slave_analyzers.append[idx]
 
     def _addanalyzer(self, ancls, *anargs, **ankwargs):
-        anname = ankwargs.pop('_name', '') or ancls.__name__.lower()
+        anname = ankwargs.pop('_name', '') or ancls.__name__.lower()  # 分析对象的名称
         nsuffix = next(self._alnames[anname])
         anname += str(nsuffix or '')  # 0 (first instance) gets no suffix
-        analyzer = ancls(*anargs, **ankwargs)
+        analyzer = ancls(*anargs, **ankwargs)  # 分析对象实例化
         self.analyzers.append(analyzer, anname)
 
     def _addobserver(self, multi, obscls, *obsargs, **obskwargs):

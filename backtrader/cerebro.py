@@ -299,7 +299,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
         self.strats = list()
         self.optcbs = list()  # holds a list of callbacks for opt strategies
         self.observers = list()
-        self.analyzers = list()
+        self.analyzers = list() # 分析对象
         self.indicators = list()
         self.sizers = dict()
         self.writers = list()
@@ -639,6 +639,11 @@ class Cerebro(with_metaclass(MetaParams, object)):
         '''
         Adds an ``Analyzer`` class to the mix. Instantiation will be done at
         ``run`` time
+
+        第一参数是 ancls - 添加分析对象的类
+        第二、三个参数是 args,kwargs
+
+        在run的时候进行实例化
         '''
         self.analyzers.append((ancls, args, kwargs))
 
@@ -1253,6 +1258,8 @@ class Cerebro(with_metaclass(MetaParams, object)):
                 for indcls, indargs, indkwargs in self.indicators:
                     strat._addindicator(indcls, *indargs, **indkwargs)
 
+                # 在run的时候
+                # 调用strat，实例化分析对象
                 for ancls, anargs, ankwargs in self.analyzers:
                     strat._addanalyzer(ancls, *anargs, **ankwargs)
 

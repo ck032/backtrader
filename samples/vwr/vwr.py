@@ -82,6 +82,7 @@ def runstrat(pargs=None):
     if args.tau is not None:
         vwrkwargs['tau'] = args.tau
 
+    cerebro.addanalyzer(bt.analyzers.AnnualReturn)  # 年化收益率
     cerebro.addanalyzer(bt.analyzers.SQN)  # SQN Analyzer
     cerebro.addanalyzer(bt.analyzers.SharpeRatio_A)  # SharpeRatio_A Analyzer
     cerebro.addanalyzer(bt.analyzers.VWR, **vwrkwargs)  # VWR Analyzer

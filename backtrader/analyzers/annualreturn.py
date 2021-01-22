@@ -26,7 +26,7 @@ from collections import OrderedDict
 from backtrader.utils.py3 import range
 from backtrader import Analyzer
 
-
+# 继承 Analyzer,并且重写了stop方法,get_analysis方法
 class AnnualReturn(Analyzer):
     '''
     This analyzer calculates the AnnualReturns by looking at the beginning
@@ -55,12 +55,13 @@ class AnnualReturn(Analyzer):
         value_cur = 0.0
         value_end = 0.0
 
-        self.rets = list()
-        self.ret = OrderedDict()
+        self.rets = list()           # 一系类收益，形成list
+        self.ret = OrderedDict()     # 字典形式
 
+        # 从数据列的最后一行开始（也就最近的日期），直到第一行
         for i in range(len(self.data) - 1, -1, -1):
             dt = self.data.datetime.date(-i)
-            value_cur = self.strategy.stats.broker.value[-i]
+            value_cur = self.strategy.stats.broker.value[-i] # 获取当前市值
 
             if dt.year > cur_year:
                 if cur_year >= 0:
