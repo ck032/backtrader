@@ -27,10 +27,10 @@ import datetime
 import backtrader as bt
 
 TFRAMES = dict(
-    days=bt.TimeFrame.Days,
-    weeks=bt.TimeFrame.Weeks,
-    months=bt.TimeFrame.Months,
-    years=bt.TimeFrame.Years)
+    days=bt.TimeFrame.Days,     # 5
+    weeks=bt.TimeFrame.Weeks,   # 6
+    months=bt.TimeFrame.Months, # 7
+    years=bt.TimeFrame.Years)   # 8
 
 
 def runstrat(pargs=None):
@@ -42,6 +42,7 @@ def runstrat(pargs=None):
     if args.cash is not None:
         cerebro.broker.set_cash(args.cash)
 
+    # 数据相关的kwargs - d - data
     dkwargs = dict()
     # Get the dates from the args
     if args.fromdate is not None:
@@ -57,15 +58,17 @@ def runstrat(pargs=None):
 
     cerebro.addstrategy(bt.strategies.SMA_CrossOver)  # Add the strategy
 
+    # 分析相关的kwargs - lr - analyzers
     lrkwargs = dict()
     if args.tframe is not None:
         lrkwargs['timeframe'] = TFRAMES[args.tframe]
 
     if args.tann is not None:
-        lrkwargs['tann'] = args.tann
+        lrkwargs['tann'] = args.tann  # tann - t - annual
 
     cerebro.addanalyzer(bt.analyzers.Returns, **lrkwargs)  # Returns
 
+    # vwrkwargs - vwr - 分析相关
     vwrkwargs = dict()
     if args.tframe is not None:
         vwrkwargs['timeframe'] = TFRAMES[args.tframe]
@@ -79,8 +82,8 @@ def runstrat(pargs=None):
     if args.tau is not None:
         vwrkwargs['tau'] = args.tau
 
-    cerebro.addanalyzer(bt.analyzers.SQN)  # VWR Analyzer
-    cerebro.addanalyzer(bt.analyzers.SharpeRatio_A)  # VWR Analyzer
+    cerebro.addanalyzer(bt.analyzers.SQN)  # SQN Analyzer
+    cerebro.addanalyzer(bt.analyzers.SharpeRatio_A)  # SharpeRatio_A Analyzer
     cerebro.addanalyzer(bt.analyzers.VWR, **vwrkwargs)  # VWR Analyzer
     # Sample time return analyzers
     cerebro.addanalyzer(bt.analyzers.TimeReturn,
