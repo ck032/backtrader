@@ -27,9 +27,13 @@ import backtrader.indicators as btind
 
 
 class RelativeVolume(bt.Indicator):
+    # 继承自 bt.Indicator类
+
     csv = True  # show up in csv output (default for indicators is False)
 
-    lines = ('relvol',)
+    lines = ('relvol',)  # 定义线（也就是指标）的名称
+
+    # 定义线的参数
     params = (
         ('period', 20),
         ('volisnan', True),
@@ -39,7 +43,7 @@ class RelativeVolume(bt.Indicator):
         if self.p.volisnan:
             # if missing volume will be NaN, do a simple division
             # the end result for missing volumes will also be NaN
-            relvol = self.data.volume(-self.p.period) / self.data.volume
+            relvol = self.data.volume(-self.p.period) / self.data.volume  # 相对成交量指标，p天前的成交量/当前日的成交量
         else:
             # Else do a controlled Div with a built-in function
             relvol = bt.DivByZero(

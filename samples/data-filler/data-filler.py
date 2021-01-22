@@ -54,15 +54,17 @@ def runstrategy():
         dataname=args.data,
         fromdate=fromdate,
         todate=todate,
-        timeframe=bt.TimeFrame.Minutes,
+        timeframe=bt.TimeFrame.Minutes,  # 分钟级别的数据
         compression=1,
         sessionstart=dtstart,  # internally just the "time" part will be used
         sessionend=dtend,  # internally just the "time" part will be used
     )
 
+    # 是否数据过滤（截片）
     if args.filter:
         data.addfilter(btfilters.SessionFilter)
 
+    # 是否对bar的缺失值进行填充，如果需要填充，需要给定填充值
     if args.filler:
         data.addfilter(btfilters.SessionFiller, fill_vol=args.fvol)
 
@@ -72,6 +74,8 @@ def runstrategy():
     if args.relvol:
         # Calculate backward period - tend tstart are in same day
         # + 1 to include last moment of the interval dstart <-> dtend
+        # 时间片段上的相对成交量
+        # 如果plot的话，会在图上显示出来这条线
         td = ((dtend - dtstart).seconds // 60) + 1
         cerebro.addindicator(RelativeVolume,
                              period=td,
@@ -85,6 +89,7 @@ def runstrategy():
         cerebro.addwriter(bt.WriterFile, csv=args.wrcsv)
 
     # And run it - no trading - disable stdstats
+    # 没有交易时，stdstats设置为False
     cerebro.run(stdstats=False)
 
     # Plot if requested
