@@ -29,10 +29,16 @@ import backtrader.indicators as btind
 
 
 class BidAskCSV(btfeeds.GenericCSVData):
-    linesoverride = True  # discard usual OHLC structure
+    # 这个案例显示了如何读入一个完全不同的数据结构
+    # 需要继承自btfeeds.GenericCSVData
+    linesoverride = True  # discard usual OHLC structure 重写了默认的OHLC数据结构
+
     # datetime must be present and last
+    # 注意：datetime列一定要存在，而且是在最后
     lines = ('bid', 'ask', 'datetime')
+
     # datetime (always 1st) and then the desired order for
+    # 写好字段位置
     params = (
         # (datetime, 0), # inherited from parent class
         ('bid', 1),  # default field pos 1
@@ -50,7 +56,7 @@ class St(bt.Strategy):
     def next(self):
         dtstr = self.data.datetime.datetime().isoformat()
         txt = '%4d: %s - Bid %.4f - %.4f Ask' % (
-            (len(self), dtstr, self.data.bid[0], self.data.ask[0]))
+            (len(self), dtstr, self.data.bid[0], self.data.ask[0]))  # len(self)是指处理到第几行了
 
         if self.p.sma:
             txt += ' - SMA: %.4f' % self.sma[0]
@@ -71,7 +77,7 @@ def parse_args():
                         required=False, default='%m/%d/%Y %H:%M:%S',
                         help='Format of datetime in input')
 
-    parser.add_argument('--sma', '-s', action='store_true',
+    parser.add_argument('--sma', '-s', action='store_true', # action='store_true':如果有选项，则默认值为True
                         required=False,
                         help='Add an SMA to the mix')
 
