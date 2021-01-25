@@ -42,14 +42,17 @@ def runstrat():
         dataname=datapath)
 
     # Handy dictionary for the argument timeframe conversion
+    # 日周月，会变为bt.TimeFrame中类中的指代的数字
     tframes = dict(
         daily=bt.TimeFrame.Days,
         weekly=bt.TimeFrame.Weeks,
         monthly=bt.TimeFrame.Months)
 
     # Resample the data
+    # 数据重采样
     if args.oldrs:
         # Old resampler, fully deprecated
+        # 旧的重采样接口，已经废弃
         data = bt.DataResampler(
             dataname=data,
             timeframe=tframes[args.timeframe],
@@ -59,6 +62,7 @@ def runstrat():
         cerebro.adddata(data)
     else:
         # New resampler
+        # 新的采样接口，利用timeframe参数指定
         cerebro.resampledata(
             data,
             timeframe=tframes[args.timeframe],
@@ -83,7 +87,7 @@ def parse_args():
 
     parser.add_argument('--timeframe', default='weekly', required=False,
                         choices=['daily', 'weekly', 'monthly'],
-                        help='Timeframe to resample to')
+                        help='Timeframe to resample to')  # 指定重采样频率，日周月
 
     parser.add_argument('--compression', default=1, required=False, type=int,
                         help='Compress n bars into 1')
