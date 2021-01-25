@@ -52,8 +52,9 @@ def runstrat():
         if args.fprice is not None:
             args.fprice = float(args.fprice)
 
+        # 为啥会有缺失值呢？
         data.addfilter(
-            btfilters.CalendarDays,
+            btfilters.CalendarDays,  # calendar days指的是工作日,不包含周末
             fill_price=args.fprice,
             fill_vol=args.fvol)
 
@@ -95,14 +96,14 @@ def parse_args():
 
     parser.add_argument('--calendar', '-cal', required=False,
                         action='store_true',
-                        help='Add a CalendarDays filter')
+                        help='Add a CalendarDays filter')   # 添加工作日过滤器
 
     parser.add_argument('--fprice', required=False, default=None,
-                        help='Use as fill for price (None for previous close)')
+                        help='Use as fill for price (None for previous close)') # price填充
 
     parser.add_argument('--fvol', required=False, default=0.0,
                         type=float,
-                        help='Use as fill volume for missing bar (def: 0.0)')
+                        help='Use as fill volume for missing bar (def: 0.0)')  # vol填充
 
     parser.add_argument('--sma', required=False,
                         action='store_true',

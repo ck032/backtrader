@@ -36,9 +36,9 @@ class CalendarDays(with_metaclass(metabase.MetaParams, object)):
 
       - fill_price (def: None):
 
-        > 0: The given value to fill
-        0 or None: Use the last known closing price
-        -1: Use the midpoint of the last bar (High-Low average)
+       1. > 0: The given value to fill
+       2. 0 or None: Use the last known closing price
+       3. -1: Use the midpoint of the last bar (High-Low average)
 
       - fill_vol (def: float('NaN')):
 
