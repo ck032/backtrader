@@ -35,11 +35,16 @@ class MultiDataStrategy(bt.Strategy):
     This strategy operates on 2 datas. The expectation is that the 2 datas are
     correlated and the 2nd data is used to generate signals on the 1st
 
+    在2个数据集上执行的策略。这两个数据集是相关的，第二个数据集用来在第一个数据集上生成信号。
+
       - Buy/Sell Operationss will be executed on the 1st data
       - The signals are generated using a Simple Moving Average on the 2nd data
         when the close price crosses upwwards/downwards
 
-    The strategy is a long-only strategy
+    Buy/Sell是在第一个数据集上执行的
+    第二个数据集上用来产生信号
+
+    The strategy is a long-only strategy  # 长期策略
     '''
     params = dict(
         period=15,
@@ -48,12 +53,14 @@ class MultiDataStrategy(bt.Strategy):
     )
 
     def log(self, txt, dt=None):
+        # log函数 - 用在notify_order中
         if self.p.printout:
             dt = dt or self.data.datetime[0]
             dt = bt.num2date(dt)
             print('%s, %s' % (dt.isoformat(), txt))
 
     def notify_order(self, order):
+        # notify_order - 参数：order,订单执行情况
         if order.status in [bt.Order.Submitted, bt.Order.Accepted]:
             return  # Await further notifications
 
@@ -73,15 +80,24 @@ class MultiDataStrategy(bt.Strategy):
         self.orderid = None
 
     def __init__(self):
+        # 初始化 - 创建指标，信号向量
+        # 初始化 - 设置self.orderid=None
+
         # To control operation entries
         self.orderid = None
 
         # Create SMA on 2nd data
+        # 在data1上创建sma
         sma = btind.MovAv.SMA(self.data1, period=self.p.period)
+
         # Create a CrossOver Signal from close an moving average
+        # 在data1上创建signal
         self.signal = btind.CrossOver(self.data1.close, sma)
 
     def next(self):
+        # next - 实际策略在bar上执行的地方
+
+        # 如果有未决订单，不允许有新订单
         if self.orderid:
             return  # if an order is active, no new orders are allowed
 
@@ -95,13 +111,14 @@ class MultiDataStrategy(bt.Strategy):
             print('Data0 dt:', self.data0.datetime.datetime())
             print('Data1 dt:', self.data1.datetime.datetime())
 
+        # 没在市场中
         if not self.position:  # not yet in market
             if self.signal > 0.0:  # cross upwards
-                self.log('BUY CREATE , %.2f' % self.data1.close[0])
-                self.buy(size=self.p.stake)
+                self.log('BUY CREATE , %.2f' % self.data1.close[0])  # data1的价格
+                self.buy(size=self.p.stake)   # 实际执行的是data0的价格
                 self.buy(data=self.data1, size=self.p.stake)
 
-        else:  # in the market
+        else:  # in the market，在市场中
             if self.signal < 0.0:  # crosss downwards
                 self.log('SELL CREATE , %.2f' % self.data1.close[0])
                 self.sell(size=self.p.stake)
