@@ -51,6 +51,8 @@ class EnvelopeMixIn(object):
     def __init__(self):
         # Mix-in & directly from object -> does not necessarily need super
         # super(EnvelopeMixIn, self).__init__()
+
+        # 这个很简单，就是数据线，加减一个百分比，作为top,bot(bottom)
         perc = self.p.perc / 100.0
 
         self.lines.top = self.lines[0] * (1.0 + perc)
@@ -62,10 +64,15 @@ class EnvelopeMixIn(object):
 class _EnvelopeBase(Indicator):
     lines = ('src',)
 
+    # 注意：plotinfo，plotlines都是dict
+    # 在lineiterator脚本中， LineIterator中有定义plotinfo，plotlines
+
     # plot the envelope lines along the passed source
+    # 和传递的source一起打印top,bot两条线
     plotinfo = dict(subplot=False)
 
     # Do not replot the data line
+    # 不打印src（数据线）本身
     plotlines = dict(src=dict(_plotskip=True))
 
     def __init__(self):
@@ -89,6 +96,7 @@ class Envelope(_EnvelopeBase, EnvelopeMixIn):
 
 
 # Automatic creation of Moving Average Envelope classes
+# 自动创建Moving Average Envelope 类
 
 for movav in MovingAverage._movavs[1:]:
     _newclsdoc = '''

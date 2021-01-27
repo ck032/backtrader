@@ -39,9 +39,10 @@ class UpDay(Indicator):
     See:
       - http://en.wikipedia.org/wiki/Relative_strength_index
     '''
-    lines = ('upday',)
-    params = (('period', 1),)
+    lines = ('upday',)   # 定义线
+    params = (('period', 1),)  # 以元组的形式定义参数params
 
+    # 在init部分定义具体的指标计算方式（向量）
     def __init__(self):
         self.lines.upday = Max(self.data - self.data(-self.p.period), 0.0)
         super(UpDay, self).__init__()
