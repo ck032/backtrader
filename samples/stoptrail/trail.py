@@ -26,14 +26,14 @@ import datetime
 
 import backtrader as bt
 
-
+# stoptrail - trail - 追踪的意思
 class St(bt.Strategy):
     params = dict(
         ma=bt.ind.SMA,
         p1=10,
         p2=30,
         stoptype=bt.Order.StopTrail,
-        trailamount=0.0,
+        trailamount=1000.0,
         trailpercent=0.0,
         limitoffset=0.0,
     )
