@@ -889,10 +889,13 @@ class Cerebro(with_metaclass(MetaParams, object)):
 
         and will create an internal pseudo-iterable if possible
         '''
-        self._dooptimize = True
-        args = self.iterize(args)
-        optargs = itertools.product(*args)
+        self._dooptimize = True # 开始做参数优化
 
+        # args
+        args = self.iterize(args) # 把args变为可迭代
+        optargs = itertools.product(*args) # 通过itertools.product对参数进行组合
+
+        # kwargs
         optkeys = list(kwargs)
 
         vals = self.iterize(kwargs.values())
@@ -902,7 +905,10 @@ class Cerebro(with_metaclass(MetaParams, object)):
 
         optkwargs = map(dict, okwargs1)
 
+        # strategy和opt-args,opt-kwargs进行组合
         it = itertools.product([strategy], optargs, optkwargs)
+
+        # 返回self.strats
         self.strats.append(it)
 
     def addstrategy(self, strategy, *args, **kwargs):

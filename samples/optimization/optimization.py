@@ -41,6 +41,8 @@ class OptimizeStrategy(bt.Strategy):
 
     def __init__(self):
         # Add indicators to add load
+        # 添加indicators
+        # 此位置，可以添加signal
 
         btind.SMA(period=self.p.smaperiod)
         btind.MACD(period_me1=self.p.macdperiod1,
@@ -59,6 +61,8 @@ def runstrat():
                          optreturn=not args.no_optreturn)
 
     # Add a strategy
+    # 核心：optstategy
+    # 用range传入范围，然后进行优化
     cerebro.optstrategy(
         OptimizeStrategy,
         smaperiod=range(args.ma_low, args.ma_high),
