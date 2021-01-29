@@ -37,7 +37,7 @@ class MyStrategy(bt.Strategy):
     params = (('smaperiod', 15),)
 
     def log(self, txt, dt=None):
-        ''' Logging function fot this strategy'''
+        """ Logging function fot this strategy"""
         dt = dt or self.data.datetime[0]
         if isinstance(dt, float):
             dt = bt.num2date(dt)
@@ -56,8 +56,9 @@ class MyStrategy(bt.Strategy):
 
     def next(self):
         # Access -1, because drawdown[0] will be calculated after "next"
-        self.log('DrawDown: %.2f' % self.stats.drawdown.drawdown[-1])
-        self.log('MaxDrawDown: %.2f' % self.stats.drawdown.maxdrawdown[-1])
+        # 注意：从 -1 开始
+        self.log('DrawDown: %.2f' % self.stats.drawdown.drawdown[-1]) # 回撤
+        self.log('MaxDrawDown: %.2f' % self.stats.drawdown.maxdrawdown[-1]) # 历史上的最大回撤
 
         # Check if we are in the market
         if self.position:
@@ -82,7 +83,7 @@ def runstrat():
     cerebro.addstrategy(MyStrategy)
     cerebro.run()
 
-    cerebro.plot()
+    # cerebro.plot()
 
 
 if __name__ == '__main__':

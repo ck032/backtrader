@@ -82,7 +82,7 @@ class TimeReturn(Observer):
 
     def __init__(self):
         self.treturn = self._owner._addanalyzer_slave(bt.analyzers.TimeReturn,
-                                                      **self.p._getkwargs())
+                                                      **self.p._getkwargs())  # 来自于 bt.analyzers.TimeReturn
 
     def next(self):
         self.lines.timereturn[0] = self.treturn.rets.get(self.treturn.dtkey,

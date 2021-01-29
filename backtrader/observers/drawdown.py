@@ -29,6 +29,9 @@ class DrawDown(Observer):
     '''This observer keeps track of the current drawdown level (plotted) and
     the maxdrawdown (not plotted) levels
 
+    回撤 - 绘图部分
+    最大回撤  - 没有绘图
+
     Params:
 
       - ``fund`` (default: ``None``)
@@ -51,16 +54,16 @@ class DrawDown(Observer):
 
     plotinfo = dict(plot=True, subplot=True)
 
-    plotlines = dict(maxdrawdown=dict(_plotskip=True,))
+    plotlines = dict(maxdrawdown=dict(_plotskip=True,))  # maxdrawdown,不绘图
 
     def __init__(self):
         kwargs = self.p._getkwargs()
         self._dd = self._owner._addanalyzer_slave(bt.analyzers.DrawDown,
-                                                  **kwargs)
+                                                  **kwargs) # 来自于bt.analyzers.DrawDown
 
     def next(self):
-        self.lines.drawdown[0] = self._dd.rets.drawdown  # update drawdown
-        self.lines.maxdrawdown[0] = self._dd.rets.max.drawdown  # update max
+        self.lines.drawdown[0] = self._dd.rets.drawdown  # update drawdown 回撤
+        self.lines.maxdrawdown[0] = self._dd.rets.max.drawdown  # update max 最大回撤
 
 
 class DrawDownLength(Observer):
