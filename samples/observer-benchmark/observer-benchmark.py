@@ -37,8 +37,8 @@ class St(bt.Strategy):
     )
 
     def __init__(self):
-        sma = bt.indicators.SMA(self.data, period=self.p.period)
-        self.crossover = bt.indicators.CrossOver(self.data, sma)
+        self.sma = bt.indicators.SMA(self.data, period=self.p.period)
+        self.crossover = bt.indicators.CrossOver(self.data, self.sma)
 
     def start(self):
         if self.p.printout:
@@ -57,7 +57,7 @@ class St(bt.Strategy):
         if self.p.printout:
             # Print only 1st data ... is just a check that things are running
             txtfields = list()
-            txtfields.append('%04d' % len(self))
+            txtfields.append('%04d' % len(self))  # 处理到第几条数据了
             txtfields.append(self.data.datetime.datetime(0).isoformat())
             txtfields.append('%.2f' % self.data0.open[0])
             txtfields.append('%.2f' % self.data0.high[0])
@@ -67,19 +67,28 @@ class St(bt.Strategy):
             txtfields.append('%.2f' % self.data0.openinterest[0])
             print(','.join(txtfields))
 
+        # 持仓卖出
         if self.position:
             if self.crossover < 0.0:
                 if self.p.printout:
-                    print('CLOSE {} @%{}'.format(size,
-                                                 self.data.close[0]))
+                    print("-" * 10)
+                    print('CLOSE {} @ % {} \n'
+                          'Sma:{},signal:{}'.format(self.position.size,
+                                                              self.data.close[0],
+                                                              self.sma[0],
+                                                              self.crossover[0]))
                 self.close()
 
+        # 买入信号
         else:
             if self.crossover > 0.0:
                 self.buy(size=self.p.stake)
                 if self.p.printout:
-                    print('BUY   {} @%{}'.format(self.p.stake,
-                                                self.data.close[0]))
+                    print('BUY   {} @ % {} \n'
+                          'Sma:{},signal:{}'.format(self.p.stake,
+                                                    self.data.close[0],
+                                                    self.sma[0],
+                                                    self.crossover[0]))
 
 
 TIMEFRAMES = {
@@ -115,9 +124,12 @@ def runstrat(args=None):
                         stake=args.stake,
                         printout=args.printout)
 
+    # 绘图的时候，显示比较基准
+    # TimeReturn - 收益
     if args.timereturn:
         cerebro.addobserver(bt.observers.TimeReturn,
                             timeframe=TIMEFRAMES[args.timeframe])
+    # 指定data1为比较基准
     else:
         benchdata = data0
         if args.benchdata1:
@@ -164,7 +176,7 @@ def parse_args(pargs=None):
                         default='2006-12-31',
                         help='Ending date in YYYY-MM-DD format')
 
-    parser.add_argument('--printout', required=False, action='store_true',
+    parser.add_argument('--printout', required=True, action='store_true',
                         help=('Print data lines'))
 
     parser.add_argument('--cash', required=False, action='store',
@@ -173,7 +185,7 @@ def parse_args(pargs=None):
 
     parser.add_argument('--period', required=False, action='store',
                         type=int, default=30,
-                        help=('Period for the crossover moving average'))
+                        help=('Period for the crossover moving average')) # 因为指定了30，所以数据日期从31号才开始
 
     parser.add_argument('--stake', required=False, action='store',
                         type=int, default=1000,
