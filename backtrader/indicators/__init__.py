@@ -33,8 +33,8 @@ from .basicops import *
 from .mabase import *
 
 # moving averages (so envelope and oscillators can be auto-generated)
-from .sma import *
-from .ema import *
+from .sma import *  # 简单移动平均 
+from .ema import *  # 指数平滑
 from .smma import *
 from .wma import *
 from .dema import *
