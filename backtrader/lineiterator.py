@@ -151,19 +151,19 @@ class LineIterator(with_metaclass(MetaLineIterator, LineSeries)):
     _mindatas = 1
     _ltype = LineSeries.IndType
 
-    plotinfo = dict(plot=True,
-                    subplot=True,
-                    plotname='',
+    plotinfo = dict(plot=True,     # 是否绘图
+                    subplot=True,  # 线是否单独绘图，移动平均默认不会单独绘图
+                    plotname='',   # 线绘图时显示的名称
                     plotskip=False,
-                    plotabove=False,
-                    plotlinelabels=False,
+                    plotabove=False, # 指标在数据的上面还是下面（默认是下面）
+                    plotlinelabels=False, # 默认是类似于SimpleMovingAverage这样的label
                     plotlinevalues=True,
                     plotvaluetags=True,
-                    plotymargin=0.0,
-                    plotyhlines=[],
+                    plotymargin=0.0, # 绘图的过程中留一点空隙
+                    plotyhlines=[], # 水平线
                     plotyticks=[],
                     plothlines=[],
-                    plotforce=False,
+                    plotforce=False, # 如果图没有正确显示的话，设置为True
                     plotmaster=None,)
 
     def _periodrecalc(self):
