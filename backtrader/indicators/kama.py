@@ -41,13 +41,13 @@ class AdaptiveMovingAverage(MovingAverageBase):
     the live nature of the smoothing factor
 
     Formula:
-      - direction = close - close_period
-      - volatility = sumN(abs(close - close_n), period)
-      - effiency_ratio = abs(direction / volatility)
-      - fast = 2 / (fast_period + 1)
-      - slow = 2 / (slow_period + 1)
+      - direction = close - close_period   方向：2两个收盘价只差
+      - volatility = sumN(abs(close - close_n), period) 波动：N日波动之和
+      - effiency_ratio = abs(direction / volatility) 效率比：方向/波动
+      - fast = 2 / (fast_period + 1) 快速
+      - slow = 2 / (slow_period + 1) 慢速
 
-      - smfactor = squared(efficienty_ratio * (fast - slow) + slow)
+      - smfactor = squared(efficienty_ratio * (fast - slow) + slow) 平滑系数
       - smfactor1 = 1.0  - smfactor
 
       - The initial seed value is a SimpleMovingAverage
@@ -59,7 +59,7 @@ class AdaptiveMovingAverage(MovingAverageBase):
     '''
     alias = ('KAMA', 'MovingAverageAdaptive',)
     lines = ('kama',)
-    params = (('fast', 2), ('slow', 30))
+    params = (('fast', 2), ('slow', 30))  # 算法中有3个参数：period,fast,slow
 
     def __init__(self):
         # Before super to ensure mixins (right-hand side in subclassing)
@@ -76,6 +76,6 @@ class AdaptiveMovingAverage(MovingAverageBase):
 
         self.lines[0] = ExponentialSmoothingDynamic(self.data,
                                                     period=self.p.period,
-                                                    alpha=sc)
+                                                    alpha=sc)   # 这个算法，主要在于怎么算这个alpha，相当于是自适用的
 
         super(AdaptiveMovingAverage, self).__init__()
