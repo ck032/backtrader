@@ -35,7 +35,7 @@ from .mabase import *
 # moving averages (so envelope and oscillators can be auto-generated)
 from .sma import *  # 简单移动平均 
 from .ema import *  # 指数平滑
-from .smma import *
+from .smma import * # 指数平滑算法 - smma - 影响到alpha的计算
 from .wma import *
 from .dema import *
 from .kama import *

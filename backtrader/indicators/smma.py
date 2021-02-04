@@ -54,5 +54,5 @@ class SmoothedMovingAverage(MovingAverageBase):
         self.lines[0] = ExponentialSmoothing(
             self.data,
             period=self.p.period,
-            alpha=1.0 / self.p.period)
+            alpha=1.0 / self.p.period)  # 和指数平滑相似，只不过这儿的分母是self.p.period，总的来说还是对alpha产生影响
         super(SmoothedMovingAverage, self).__init__()
