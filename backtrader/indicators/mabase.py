@@ -25,11 +25,12 @@ from ..utils.py3 import with_metaclass
 
 from . import Indicator
 
+# 回字的N种写法...
 
 class MovingAverage(object):
     '''MovingAverage (alias MovAv)
 
-    A placeholder to gather all Moving Average Types in a single place.
+    A placeholder（占位符） to gather all Moving Average Types in a single place.
 
     Instantiating a SimpleMovingAverage can be achieved as follows::
 
@@ -87,5 +88,5 @@ class MetaMovAvBase(Indicator.__class__):
 
 
 class MovingAverageBase(with_metaclass(MetaMovAvBase, Indicator)):
-    params = (('period', 30),)
+    params = (('period', 30),)  # 参数，默认是30日
     plotinfo = dict(subplot=False)

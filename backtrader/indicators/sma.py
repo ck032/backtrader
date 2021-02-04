@@ -23,6 +23,7 @@ from __future__ import (absolute_import, division, print_function,
 
 from . import MovingAverageBase, Average
 
+# 指标：N日收盘价的均值-移动平均
 
 class MovingAverageSimple(MovingAverageBase):
     '''
