@@ -39,7 +39,7 @@ from .smma import * # 指数平滑算法 - smma - 影响到alpha的计算
 from .wma import *  # 加权移动平均 - w - weighted  - 近期的权重大
 from .dema import * # 双指数移动平均线(DEMA),三重指数移动平均线(TEMA)
 from .kama import * # KAMA指标,自适用的alpha
-from .zlema import *
+from .zlema import * # 零滞后项的指数移动平均，zlema
 from .hma import *
 from .zlind import *
 from .dma import *

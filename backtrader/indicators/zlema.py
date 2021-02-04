@@ -31,6 +31,9 @@ class ZeroLagExponentialMovingAverage(MovingAverageBase):
     which adds a momentum term aiming to reduce lag in the average so as to
     track current prices more closely.
 
+    * 零滞后项的指数移动平均
+    * 可以更好的跟踪当前价格
+
     Formula:
       - lag = (period - 1) / 2
       - zlema = ema(2 * data - data(-lag))
