@@ -36,6 +36,11 @@ class DoubleExponentialMovingAverage(MovingAverageBase):
     Formula:
       - dema = (2.0 - ema(data, period) - ema(ema(data, period), period)
 
+    Formula2:
+      - ema1 = ema(data, period)          # 第一次求指数平均
+      - ema2 = ema(ema1, period)          # 第二次指数平均
+      - dema = 2 * ema1 - ema2            # dema - d - double
+
     See:
       (None)
     '''
@@ -61,10 +66,10 @@ class TripleExponentialMovingAverage(MovingAverageBase):
     It attempts to reduce the inherent lag associated to Moving Averages
 
     Formula:
-      - ema1 = ema(data, period)
-      - ema2 = ema(ema1, period)
-      - ema3 = ema(ema2, period)
-      - tema = 3 * ema1 - 3 * ema2 + ema3
+      - ema1 = ema(data, period)          # 第一次求指数平均
+      - ema2 = ema(ema1, period)          # 第二次指数平均
+      - ema3 = ema(ema2, period)          # 第三次指数平均
+      - tema = 3 * ema1 - 3 * ema2 + ema3  # tema - t - triple
 
     See:
       (None)

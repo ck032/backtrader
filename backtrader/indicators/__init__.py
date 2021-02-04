@@ -36,8 +36,8 @@ from .mabase import *  # 简单移动平均的基类
 from .sma import *  # 简单移动平均 
 from .ema import *  # 指数平滑
 from .smma import * # 指数平滑算法 - smma - 影响到alpha的计算
-from .wma import *
-from .dema import *
+from .wma import *  # 加权移动平均 - w - weighted  - 近期的权重大
+from .dema import * # 双指数移动平均线(DEMA),三重指数移动平均线(TEMA)
 from .kama import *
 from .zlema import *
 from .hma import *
