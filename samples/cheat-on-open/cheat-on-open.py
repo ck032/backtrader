@@ -50,11 +50,14 @@ class St(bt.Strategy):
         )
 
     def operate(self, fromopen):
+        # 有未决订单，不做任何事情
         if self.order is not None:
             return
+        # 持仓卖单
         if self.position:
             if self.signal < 0:
                 self.order = self.close()
+        # 买单信号
         elif self.signal > 0:
             print('{} Send Buy, fromopen {}, close {}'.format(
                 self.data.datetime.date(),

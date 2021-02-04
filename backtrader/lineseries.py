@@ -477,6 +477,7 @@ class LineSeries(with_metaclass(MetaLineSeries, LineMultiple)):
         super(LineSeries, self).__init__()
         pass
 
+    # 打印label
     def plotlabel(self):
         label = self.plotinfo.plotname or self.__class__.__name__
         sublabels = self._plotlabel()
@@ -495,6 +496,7 @@ class LineSeries(with_metaclass(MetaLineSeries, LineMultiple)):
         return label
 
     def _plotlabel(self):
+        # 利用_plotlabel可以传参
         return self.params._getvalues()
 
     def _getline(self, line, minusall=False):

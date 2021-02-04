@@ -23,6 +23,12 @@ from __future__ import (absolute_import, division, print_function,
 
 from . import Indicator, MovAv, StdDev
 
+# A.从这个脚本中，可以看到，定义一个指标，只需要：
+# 1.继承Indicator
+# 2.定义线、定义好线的绘图方式
+# 3.定义线，包括：线的别名、名称、参数、计算方法
+
+# B.BollingerBands：布林线。中线-简单移动均线（20，26），标准差系数（2，可以微调为1.9,2.1等）
 
 class BollingerBands(Indicator):
     '''
@@ -37,19 +43,20 @@ class BollingerBands(Indicator):
     See:
       - http://en.wikipedia.org/wiki/Bollinger_Bands
     '''
-    alias = ('BBands',)
+    alias = ('BBands',) # alias定义别名
 
-    lines = ('mid', 'top', 'bot',)
-    params = (('period', 20), ('devfactor', 2.0), ('movav', MovAv.Simple),)
+    lines = ('mid', 'top', 'bot',) # 定义线（指标）的名称，这是一个元组；然后在init部分定义线的计算方式
+    params = (('period', 20), ('devfactor', 2.0), ('movav', MovAv.Simple),) # params定义参数，带有默认值
 
-    plotinfo = dict(subplot=False)
+    plotinfo = dict(subplot=False) # subplot默认为True；绘图的全局信息
     plotlines = dict(
         mid=dict(ls='--'),
         top=dict(_samecolor=True),
         bot=dict(_samecolor=True),
-    )
+    )  # 绘图-线的展示形式
 
     def _plotlabel(self):
+        # 利用_plotlabel可以传参（用户自定义的label）
         plabels = [self.p.period, self.p.devfactor]
         plabels += [self.p.movav] * self.p.notdefault('movav')
         return plabels

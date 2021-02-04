@@ -151,6 +151,7 @@ class LineIterator(with_metaclass(MetaLineIterator, LineSeries)):
     _mindatas = 1
     _ltype = LineSeries.IndType
 
+    # 绘图信息
     plotinfo = dict(plot=True,
                     subplot=True,
                     plotname='',
@@ -458,10 +459,10 @@ def LinesCoupler(cdata, clock=None, **kwargs):
     thismod = sys.modules[LinesCoupler.__module__]
     setattr(thismod, ncls.__name__, ncls)
     # Replace lines et al., to get a sensible clone
-    ncls.lines = cdatacls.lines
-    ncls.params = cdatacls.params
-    ncls.plotinfo = cdatacls.plotinfo
-    ncls.plotlines = cdatacls.plotlines
+    ncls.lines = cdatacls.lines  # 线
+    ncls.params = cdatacls.params # 参数
+    ncls.plotinfo = cdatacls.plotinfo  # 绘图的全局信息
+    ncls.plotlines = cdatacls.plotlines # 绘图-线的展示形式
 
     obj = ncls(cdata, **kwargs)  # instantiate
     # The clock is set here to avoid it being interpreted as a data by the
