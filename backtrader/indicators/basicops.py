@@ -463,6 +463,8 @@ class WeightedAverage(PeriodN):
     weight to the most recent data
 
     The result will be multiplied by a given "coef"
+    
+    加权移动平均，用coef进行放大/缩小；线性关系，近期数据权重大
 
     Formula:
       - av = coef * sum(mul(data, period), weights)
@@ -478,9 +480,9 @@ class WeightedAverage(PeriodN):
         super(WeightedAverage, self).__init__()
 
     def next(self):
-        data = self.data.get(size=self.p.period)
-        dataweighted = map(operator.mul, data, self.p.weights)
-        self.line[0] = self.p.coef * math.fsum(dataweighted)
+        data = self.data.get(size=self.p.period)  # 获取前N天(self.p.period)的收盘价
+        dataweighted = map(operator.mul, data, self.p.weights) # 和给定的weights相乘
+        self.line[0] = self.p.coef * math.fsum(dataweighted) # 利用self.p.coef进行放大/缩小
 
     def once(self, start, end):
         darray = self.data.array
@@ -489,6 +491,8 @@ class WeightedAverage(PeriodN):
         coef = self.p.coef
         weights = self.p.weights
 
+        # 近期数据权重大，是由once函数来定义的
+        # movav = coef * Sum(weight[i] * data[period - i] for i in range(period))
         for i in range(start, end):
             data = darray[i - period + 1: i + 1]
             larray[i] = coef * math.fsum(map(operator.mul, data, weights))

@@ -30,7 +30,7 @@ from backtrader.functions import *
 from .basicops import *
 
 # base for moving averages
-from .mabase import *
+from .mabase import *  # 简单移动平均的基类
 
 # moving averages (so envelope and oscillators can be auto-generated)
 from .sma import *  # 简单移动平均 
