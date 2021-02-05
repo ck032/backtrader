@@ -36,6 +36,8 @@ class ZeroLagIndicator(MovingAverageBase):
     which modifies the EMA by trying to minimize the error (distance price -
     error correction) and thus reduce the lag
 
+    减少滞后性
+
     Formula:
       - EMA(data, period)
 
@@ -70,7 +72,7 @@ class ZeroLagIndicator(MovingAverageBase):
         self.ema = MovAv.EMA(period=self.p.period)
         self.limits = [-self.p.gainlimit, self.p.gainlimit + 1]
 
-        # To make mixins work - super at the end for cooperative inheritance
+        # To make mixins work - super at the end for cooperative inheritance（保证mixins可以正常工作，继承）
         super(ZeroLagIndicator, self).__init__()
 
     def next(self):
@@ -83,9 +85,10 @@ class ZeroLagIndicator(MovingAverageBase):
         for value1 in range(*self.limits):
             gain = value1 / 10
             ec = alpha * (ema + gain * (price - ec1)) + alpha1 * ec1
-            error = abs(price - ec)
+            error = abs(price - ec)  # 最小化error
             if error < leasterror:
                 leasterror = error
                 bestec = ec
 
+        # 注意：这个指标是在next中，而不是init中定义的
         self.lines.ec[0] = bestec
