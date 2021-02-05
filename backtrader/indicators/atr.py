@@ -110,7 +110,7 @@ class AverageTrueRange(Indicator):
     alias = ('ATR',)
 
     lines = ('atr',)
-    params = (('period', 14), ('movav', MovAv.Smoothed))
+    params = (('period', 14), ('movav', MovAv.Smoothed)) # 这儿用的是 MovAv.Smoothed
 
     def _plotlabel(self):
         plabels = [self.p.period]
