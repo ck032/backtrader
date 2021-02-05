@@ -56,16 +56,19 @@ class StandardDeviation(Indicator):
         return plabels
 
     def __init__(self):
+        # 如果有两个数据，按照第二个数据作为均值
         if len(self.datas) > 1:
             mean = self.data1
         else:
+            # 否则，求移动平均作为均值
             mean = self.p.movav(self.data, period=self.p.period)
 
         meansq = self.p.movav(pow(self.data, 2), period=self.p.period)
         sqmean = pow(mean, 2)
 
+        # 以移动均线作为均值，算N日内的标准差
         if self.p.safepow:
-            self.lines.stddev = pow(abs(meansq - sqmean), 0.5)
+            self.lines.stddev = pow(abs(meansq - sqmean), 0.5)  # 取abs；power(x,0.5)是开根号
         else:
             self.lines.stddev = pow(meansq - sqmean, 0.5)
 
@@ -104,4 +107,4 @@ class MeanDeviation(Indicator):
             mean = self.p.movav(self.data, period=self.p.period)
 
         absdev = abs(self.data - mean)
-        self.lines.meandev = self.p.movav(absdev, period=self.p.period)
+        self.lines.meandev = self.p.movav(absdev, period=self.p.period)  # 直接取ABS，收盘价和移动均线之差的绝对值

@@ -50,6 +50,7 @@ from .zlind import * # 降低移动平均线的滞后性
 from .dma import * # 综合了hma，zlind，取二者的平均数
 
 # depends on moving averages
+# 波动：收盘价和移动均线（作为均值）之间的标准差，ABS线
 from .deviation import *
 
 # depend on basicops, moving averages and deviations
