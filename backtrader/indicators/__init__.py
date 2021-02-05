@@ -56,7 +56,7 @@ from .deviation import *
 # depend on basicops, moving averages and deviations
 from .atr import *  # 平均真实波动范围 - ATR - 价格波动幅度/判断市场交易氛围
 from .aroon import * # 黎明之光指标 - aroon - 上线、下线/判断市场方向
-from .bollinger import *
+from .bollinger import * # Bolling线
 from .cci import *
 from .crossover import *
 from .dpo import *
