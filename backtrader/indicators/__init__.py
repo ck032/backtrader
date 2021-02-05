@@ -42,7 +42,7 @@ from .kama import * # KAMA指标,自适用的alpha
 from .zlema import * # 零滞后项的指数移动平均，zlema
 from .hma import * # 赫尔移动平均，hma，降低移动平均线的滞后性,并且保持平滑性
 from .zlind import * # 降低移动平均线的滞后性
-from .dma import *
+from .dma import * # 综合了hma，zlind，取二者的平均数
 
 # depends on moving averages
 from .deviation import *

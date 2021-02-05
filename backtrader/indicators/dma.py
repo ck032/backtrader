@@ -55,7 +55,7 @@ class DicksonMovingAverage(MovingAverageBase):
     lines = ('dma',)
     params = (
         ('gainlimit', 50),
-        ('hperiod', 7),
+        ('hperiod', 7),  # 注意，这个和self.p.period是两个不同的参数
         ('_movav', MovAv.EMA),
         ('_hma', MovAv.HMA),
     )
@@ -73,7 +73,8 @@ class DicksonMovingAverage(MovingAverageBase):
 
         hull = self.p._hma(period=self.p.hperiod)
 
-        self.lines.dma = (ec + hull) / 2.0
+        self.lines.dma = (ec + hull) / 2.0  # 两者的算术平均数
 
         # To make mixins work - super at the end for cooperative inheritance
+        # 利用super函数，可以保证Mixins可以正常工作
         super(DicksonMovingAverage, self).__init__()
