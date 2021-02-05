@@ -200,6 +200,8 @@ class AllN(OperationN):
     func = all
 
 
+# FindFirstIndex、FindFirstIndexHighest、FindFirstIndexLowest
+# _AroonBase - 指标 - aroon指标中有用到
 class FindFirstIndex(OperationN):
     '''
     Returns the index of the last data that satisfies equality with the

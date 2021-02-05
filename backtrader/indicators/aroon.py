@@ -39,15 +39,16 @@ class _AroonBase(Indicator):
     _up = False
     _down = False
 
+    # 定义参数、绘图参数
     params = (('period', 14), ('upperband', 70), ('lowerband', 30),)
-    plotinfo = dict(plotymargin=0.05, plotyhlines=[0, 100])
+    plotinfo = dict(plotymargin=0.05, plotyhlines=[0, 100]) # 注意这儿也是plotyhlines，限定的是范围
 
     def _plotlabel(self):
         plabels = [self.p.period]
         return plabels
 
     def _plotinit(self):
-        self.plotinfo.plotyhlines += [self.p.lowerband, self.p.upperband]
+        self.plotinfo.plotyhlines += [self.p.lowerband, self.p.upperband]  # 绘图的横线（上线、下线）
 
     def __init__(self):
         # Look backwards period + 1 for current data because the formula mus
@@ -56,11 +57,11 @@ class _AroonBase(Indicator):
         idxperiod = self.p.period + 1
 
         if self._up:
-            hhidx = FindFirstIndexHighest(self.data.high, period=idxperiod)
+            hhidx = FindFirstIndexHighest(self.data.high, period=idxperiod)  # distance to highest high
             self.up = (100.0 / self.p.period) * (self.p.period - hhidx)
 
         if self._down:
-            llidx = FindFirstIndexLowest(self.data.low, period=idxperiod)
+            llidx = FindFirstIndexLowest(self.data.low, period=idxperiod)   # distance to lowest low
             self.down = (100.0 / self.p.period) * (self.p.period - llidx)
 
         super(_AroonBase, self).__init__()
@@ -134,8 +135,8 @@ class AroonUpDown(AroonUp, AroonDown):
     within a given period the last highs/lows are (AroonUp/AroonDown)
 
     Formula:
-      - up = 100 * (period - distance to highest high) / period
-      - down = 100 * (period - distance to lowest low) / period
+      - up = 100 * (period - distance to highest high) / period  上线
+      - down = 100 * (period - distance to lowest low) / period  下线
 
     Note:
       The lines oscillate between 0 and 100. That means that the "distance" to
@@ -181,7 +182,7 @@ class AroonOscillator(_AroonBase):
     def __init__(self):
         super(AroonOscillator, self).__init__()
 
-        self.lines.aroonosc = self.up - self.down
+        self.lines.aroonosc = self.up - self.down  # 上线和下线之差
 
 
 class AroonUpDownOscillator(AroonUpDown, AroonOscillator):

@@ -54,8 +54,8 @@ from .dma import * # 综合了hma，zlind，取二者的平均数
 from .deviation import *
 
 # depend on basicops, moving averages and deviations
-from .atr import *  # 平均真实波动范围 - ATR - 价格波动幅度/市场交易氛围
-from .aroon import *
+from .atr import *  # 平均真实波动范围 - ATR - 价格波动幅度/判断市场交易氛围
+from .aroon import * # 黎明之光指标 - aroon - 上线、下线/判断市场方向
 from .bollinger import *
 from .cci import *
 from .crossover import *
