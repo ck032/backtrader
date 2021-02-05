@@ -56,11 +56,11 @@ class HullMovingAverage(MovingAverageBase):
     params = (('_movav', MovAv.WMA),)
 
     def __init__(self):
-        wma = self.p._movav(self.data, period=self.params.period)
-        wma2 = 2.0 * self.p._movav(self.data, period=self.params.period // 2)
+        wma = self.p._movav(self.data, period=self.params.period)  # 先算N日加权平均
+        wma2 = 2.0 * self.p._movav(self.data, period=self.params.period // 2) # 半个周期的加权平均
 
         sqrtperiod = pow(self.params.period, 0.5)
-        self.lines.hma = self.p._movav(wma2 - wma, period=int(sqrtperiod))
+        self.lines.hma = self.p._movav(wma2 - wma, period=int(sqrtperiod)) # 第三次加权平均
 
         # Done after calc to ensure coop inheritance and composition work
         super(HullMovingAverage, self).__init__()

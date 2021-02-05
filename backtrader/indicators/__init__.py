@@ -40,10 +40,9 @@ from .wma import *  # 加权移动平均 - w - weighted  - 近期的权重大
 from .dema import * # 双指数移动平均线(DEMA),三重指数移动平均线(TEMA)
 from .kama import * # KAMA指标,自适用的alpha
 from .zlema import * # 零滞后项的指数移动平均，zlema
-from .hma import *
+from .hma import * # 赫尔移动平均，hma，降低移动平均线的滞后性,并且保持平滑性
 from .zlind import *
 from .dma import *
-
 # depends on moving averages
 from .deviation import *
 
