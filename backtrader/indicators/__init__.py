@@ -73,13 +73,13 @@ from .pivotpoint import *
 from .prettygoodoscillator import *
 from .priceoscillator import *
 from .psar import *
-from .rsi import *
+from .rsi import * # 相对强弱指标RSI
 from .stochastic import *
 from .trix import *
 from .tsi import *
 from .ultimateoscillator import *
 from .williams import *
-from .rmi import *
+from .rmi import * # 设定好参数的RSI指标
 from .awesomeoscillator import *
 from .accdecoscillator import *
 

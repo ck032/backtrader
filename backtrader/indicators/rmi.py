@@ -53,7 +53,7 @@ class RelativeMomentumIndex(RSI):
     params = (
         ('period', 20),
         ('lookback', 5),
-    )
+    ) # 设定的参数不同，RSI默认的lookback=1
 
     def _plotlabel(self):
         # override to always print the lookback label and do it before movav
