@@ -21,7 +21,7 @@ import backtrader as bt
 from backtrader.indicators import EMA
 
 
-class Kdj_Strategy(bt.Strategy):
+class KDJ_Strategy(bt.Strategy):
     """我们知道KDJ指标计算方法如下：
 
     RSV = （收盘价-N周期最低价）/（N周期最高价-N周期最低价）*100
@@ -99,7 +99,7 @@ def run_cerebro(stock_file, result):
 
     cerebro = bt.Cerebro()
 
-    cerebro.addstrategy(Kdj_Strategy)
+    cerebro.addstrategy(KDJ_Strategy)
 
     # 加载数据到模型中
     data = bt.feeds.GenericCSVData(
@@ -137,7 +137,9 @@ def run_cerebro(stock_file, result):
     # 将最终回报率以百分比的形式返回
     result[stock_name] = float(money_left - 10000) / 10000
 
-
+# TODO：怎么获取所有数据到一个文件夹下呢？
+# TODO: 获取10只，截止到昨天的最新数据
+# TODO: 基础数据维护
 files_path = "./thoudsand_stocks/"
 result = {}
 
