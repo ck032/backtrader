@@ -74,7 +74,7 @@ from .prettygoodoscillator import *
 from .priceoscillator import *
 from .psar import *
 from .rsi import * # 相对强弱指标RSI
-from .stochastic import *
+from .stochastic import * # KD
 from .trix import *
 from .tsi import *
 from .ultimateoscillator import *

@@ -42,14 +42,16 @@ class _StochasticBase(Indicator):
         self.plotinfo.plotyhlines = [self.p.upperband, self.p.lowerband]
 
     def __init__(self):
-        highesthigh = Highest(self.data.high, period=self.p.period)
-        lowestlow = Lowest(self.data.low, period=self.p.period)
-        knum = self.data.close - lowestlow
-        kden = highesthigh - lowestlow
+        highesthigh = Highest(self.data.high, period=self.p.period)  # 过去N日最高
+        lowestlow = Lowest(self.data.low, period=self.p.period) # 过去N日最低
+        knum = self.data.close - lowestlow  # 当日收盘价 - 最低
+        kden = highesthigh - lowestlow # 最高 - 当日收盘价
+        # 计算K值
         if self.p.safediv:
             self.k = 100.0 * DivByZero(knum, kden, zero=self.p.safezero)
         else:
             self.k = 100.0 * (knum / kden)
+        # 计算D值：k值的移动均线
         self.d = self.p.movav(self.k, period=self.p.period_dfast)
 
         super(_StochasticBase, self).__init__()
@@ -71,7 +73,7 @@ class StochasticFast(_StochasticBase):
       - hh = highest(data.high, period)
       - ll = lowest(data.low, period)
       - knum = data.close - ll
-      - kden = hh - ll
+      - kden = hh - ll  # 分母部分与上面的计算不同
       - k = 100 * (knum / kden)
       - d = MovingAverage(k, period_dfast)
 
