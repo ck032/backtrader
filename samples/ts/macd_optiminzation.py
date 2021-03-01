@@ -101,7 +101,7 @@ class OptimizeStrategy(bt.Strategy):
                      (trade.pnl, trade.pnlcomm))
 
         elif trade.justopened:
-            self.log('TRADE OPENED, SIZE %2d' % trade.size)
+            self.log('TRADE OPENED, SIZE: %2d' % trade.size)
 
 
 def runstrat():
@@ -241,7 +241,7 @@ def parse_args():
 
     parser.add_argument(
         '--ma_high', type=int,
-        default=15, required=False,
+        default=11, required=False,
         help='SMA range high to optimize')
 
     parser.add_argument('--cash', default=10000, type=int,
