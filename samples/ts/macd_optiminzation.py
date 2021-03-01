@@ -26,15 +26,16 @@ import backtrader.feeds as btfeeds
 class OptimizeStrategy(bt.Strategy):
     params = (('sma_period', 15),
               ('stake', 1),
-              ('printout', False),
+              ('printout', True),
               ('onlylong', False),
               ('csvcross', False))
 
     def start(self):
-        pass
+        self.log(u'Start Value %.2f' %
+                 (self.broker.getvalue()))
 
     def stop(self):
-        self.log(u'(金叉死叉有用吗) Ending Value %.2f' %
+        self.log(u'Ending Value %.2f' %
                  (self.broker.getvalue()))
 
     def log(self, txt, dt=None):
@@ -49,9 +50,9 @@ class OptimizeStrategy(bt.Strategy):
         self.orderid = None
 
         # Create SMA on 2nd data
-        sma = btind.MovAv.SMA(self.data, period=self.p.sma_period)
+        self.sma = btind.MovAv.SMA(self.data, period=self.p.sma_period)
         # Create a CrossOver Signal from close an moving average
-        self.signal = btind.CrossOver(self.data.close, sma)
+        self.signal = btind.CrossOver(self.data.close, self.sma)
         self.signal.csv = self.p.csvcross
 
     def next(self):
@@ -63,7 +64,7 @@ class OptimizeStrategy(bt.Strategy):
                 self.log('CLOSE SHORT , %.2f' % self.data.close[0])
                 self.close()
 
-            self.log('BUY CREATE , %.2f' % self.data.close[0])
+            self.log('BUY CREATE , %.2f , %.2f' % (self.data.close[0], self.sma[0]))
             self.buy(size=self.p.stake)
 
         elif self.signal < 0.0:
@@ -72,7 +73,7 @@ class OptimizeStrategy(bt.Strategy):
                 self.close()
 
             if not self.p.onlylong:
-                self.log('SELL CREATE , %.2f' % self.data.close[0])
+                self.log('SELL CREATE , %.2f , %.2f' % (self.data.close[0], self.sma[0]))
                 self.sell(size=self.p.stake)
 
     def notify_order(self, order):
@@ -204,7 +205,7 @@ def parse_args():
 
     parser.add_argument(
         '--todate', '-t',
-        default='2006-12-30',
+        default='2006-03-30',
         help='Starting date in YYYY-MM-DD format')
 
     parser.add_argument(
@@ -214,7 +215,6 @@ def parse_args():
               '\n'
               '  - 0 (default): use all available CPUs\n'
               '  - 1 -> n: use as many as specified\n'))
-
     parser.add_argument(
         '--no-runonce', action='store_true', required=False,
         help='Run in next mode')
