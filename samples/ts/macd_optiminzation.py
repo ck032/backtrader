@@ -25,8 +25,8 @@ import backtrader.feeds as btfeeds
 
 class OptimizeStrategy(bt.Strategy):
     params = (('sma_period', 15),
-              ('stake', 1),
-              ('printout', True),
+              ('stake', 100),
+              ('printout', False),
               ('onlylong', False),
               ('csvcross', False))
 
@@ -61,31 +61,45 @@ class OptimizeStrategy(bt.Strategy):
 
         if self.signal > 0.0:  # cross upwards
             if self.position:
-                self.log('CLOSE SHORT , %.2f' % self.data.close[0])
+                self.log('-' * 10)
+                self.log('Signal - CLOSE SHORT , %.2f' % self.data.close[0])
                 self.close()
 
-            self.log('BUY CREATE , %.2f , %.2f' % (self.data.close[0], self.sma[0]))
+            self.log('Signal - BUY CREATE , %.2f , %.2f' % (self.data.close[0], self.sma[0]))
             self.buy(size=self.p.stake)
+            self.log('-' * 10)
 
         elif self.signal < 0.0:
             if self.position:
-                self.log('CLOSE LONG , %.2f' % self.data.close[0])
+                self.log('-' * 10)
+                self.log('Signal - CLOSE LONG , %.2f' % self.data.close[0])
                 self.close()
 
             if not self.p.onlylong:
-                self.log('SELL CREATE , %.2f , %.2f' % (self.data.close[0], self.sma[0]))
+                self.log('Signal - SELL CREATE , %.2f , %.2f' % (self.data.close[0], self.sma[0]))
                 self.sell(size=self.p.stake)
+                self.log('-' * 10)
+
 
     def notify_order(self, order):
+
+        if not order.alive():
+            self.log('{} {} {}@{}'.format(
+                bt.num2date(order.executed.dt),
+                'BUY' if order.isbuy() else 'SELL',
+                order.executed.size,
+                order.executed.price)
+            )
+
         if order.status in [bt.Order.Submitted, bt.Order.Accepted]:
             return  # Await further notifications
 
         if order.status == order.Completed:
             if order.isbuy():
-                buytxt = 'BUY COMPLETE, %.2f' % order.executed.price
+                buytxt = 'BUY COMPLETE - %.2f, Open,%.2f' % (order.executed.price, self.data.open[0])
                 self.log(buytxt, order.executed.dt)
             else:
-                selltxt = 'SELL COMPLETE, %.2f' % order.executed.price
+                selltxt = 'SELL COMPLETE - %.2f, Open,%.2f' % (order.executed.price, self.data.open[0])
                 self.log(selltxt, order.executed.dt)
 
         elif order.status in [order.Expired, order.Canceled, order.Margin]:
@@ -96,10 +110,12 @@ class OptimizeStrategy(bt.Strategy):
         self.orderid = None
 
     def notify_trade(self, trade):
+        # 交易结束时（买入 - 卖出），显示净收益
         if trade.isclosed:
             self.log('TRADE PROFIT, GROSS %.2f, NET %.2f' %
                      (trade.pnl, trade.pnlcomm))
 
+        # 发生交易时
         elif trade.justopened:
             self.log('TRADE OPENED, SIZE: %2d' % trade.size)
 
@@ -136,7 +152,7 @@ def runstrat():
     cerebro.adddata(data)
 
     # 1手-100股
-    cerebro.addsizer(bt.sizers.FixedSize, stake=100)
+    cerebro.addsizer(bt.sizers.FixedSize, stake=args.stake)
 
     # 金额
     cerebro.broker.setcash(args.cash)
@@ -241,14 +257,17 @@ def parse_args():
 
     parser.add_argument(
         '--ma_high', type=int,
-        default=11, required=False,
+        default=13, required=False,
         help='SMA range high to optimize')
 
-    parser.add_argument('--cash', default=10000, type=int,
+    parser.add_argument('--cash', default=1000000, type=int,
                         help='Starting Cash')
 
-    parser.add_argument('--comm', default=2, type=float,
+    parser.add_argument('--comm', default=0.02, type=float,
                         help='Commission for operation')
+
+    parser.add_argument('--stake', default=1, type=float,
+                        help='stake')
 
     return parser.parse_args()
 
