@@ -202,6 +202,8 @@ def runstrat():
     # print out the result
     print('Time used:', str(tend - tstart))
 
+    if args.plot:
+        cerebro.plot(**(eval('dict(' + args.plot + ')')))
 
 def parse_args():
     parser = argparse.ArgumentParser(
@@ -268,6 +270,14 @@ def parse_args():
 
     parser.add_argument('--stake', default=1, type=float,
                         help='stake')
+
+    parser.add_argument('--plot', '-p', nargs='?', required=False,
+                        metavar='kwargs', const=True,
+                        help=('Plot the read data applying any kwargs passed\n'
+                              '\n'
+                              'For example:\n'
+                              '\n'
+                              '  --plot style="candle" (to plot candles)\n'))
 
     return parser.parse_args()
 
