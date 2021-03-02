@@ -165,6 +165,7 @@ def runstrat():
     cerebro.addanalyzer(bt.analyzers.AnnualReturn)  # 年化收益
     cerebro.addanalyzer(bt.analyzers.DrawDown)  # 最大回撤
     cerebro.addanalyzer(bt.analyzers.TradeAnalyzer)  # 交易分析
+    cerebro.addanalyzer(bt.analyzers.GrossLeverage)  # 交易分析
 
     # 绘图
     cerebro.addobserver(bt.observers.DrawDown)  # visualize the drawdown evol
