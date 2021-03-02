@@ -14,7 +14,7 @@ class PerformanceReport:
 
     def __init__(self, stratbt, infilename,
                  outputdir, user, memo):
-        self.stratbt = stratbt  # works for only 1 stategy
+        self.stratbt = stratbt  # works for only 1 stategy 只允许一个策略
         self.infilename = infilename
         self.outputdir = outputdir
         self.user = user
@@ -23,6 +23,7 @@ class PerformanceReport:
 
     def check_and_assign_defaults(self):
         """ Check initialization parameters or assign defaults
+            检查初始化参数
         """
         if not self.infilename:
             self.infilename = 'Not given'
@@ -38,21 +39,21 @@ class PerformanceReport:
     def get_performance_stats(self):
         """ Return dict with performace stats for given strategy withing backtest
         """
-        st = self.stratbt
-        dt = st.data._dataname['open'].index
-        trade_analysis = st.analyzers.myTradeAnalysis.get_analysis()
-        rpl = trade_analysis.pnl.net.total
-        total_return = rpl / self.get_startcash()
-        total_number_trades = trade_analysis.total.total
+        st = self.stratbt  # 策略
+        dt = st.data._dataname['open'].index  # 策略的日期
+        trade_analysis = st.analyzers.myTradeAnalysis.get_analysis()  # 交易分析
+        rpl = trade_analysis.pnl.net.total  # 总的（净）收益金额
+        total_return = rpl / self.get_startcash()  # 总的收益率
+        total_number_trades = trade_analysis.total.total # 总的交易次数
         trades_closed = trade_analysis.total.closed
         bt_period = dt[-1] - dt[0]
         bt_period_days = bt_period.days
         drawdown = st.analyzers.myDrawDown.get_analysis()
         sharpe_ratio = st.analyzers.mySharpe.get_analysis()['sharperatio']
         sqn_score = st.analyzers.mySqn.get_analysis()['sqn']
-        kpi = {# PnL
-               'start_cash': self.get_startcash(),
-               'rpl': rpl,
+        kpi = {# PnL - 收益分析
+               'start_cash': self.get_startcash(),  # 起始资金
+               'rpl': rpl,  # 总的（净）收益金额
                'result_won_trades': trade_analysis.won.pnl.total,
                'result_lost_trades': trade_analysis.lost.pnl.total,
                'profit_factor': (-1 * trade_analysis.won.pnl.total / trade_analysis.lost.pnl.total),
@@ -265,6 +266,7 @@ class PerformanceReport:
         return 100 * s / s[0]
 
     def get_startcash(self):
+        """获取起始资金"""
         return self.stratbt.broker.startingcash
 
 
@@ -290,7 +292,7 @@ class Cerebro(bt.Cerebro):
                              _name="mySqn")
 
     def get_strategy_backtest(self):
-        return self.runstrats[0][0]
+        return self.runstrats[0][0]  # TODO:只跑第一个
 
     def report(self, outputdir,
                infilename=None, user=None, memo=None):
