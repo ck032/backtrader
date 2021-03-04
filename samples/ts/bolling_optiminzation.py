@@ -45,13 +45,13 @@ class OptimizeStrategy(bt.Strategy):
             # 布林线中轨
             boll_mid = bt.ind.BBands(d.close).mid
             # 买入条件
-            self.inds[d]['buy_con'] = bt.And( \
+            self.inds[d]['buy_cond'] = bt.And( \
                 # 突破中轨
                 d.open < boll_mid, d.close > boll_mid, \
                 # 放量
                 d.volume == bt.ind.Highest(d.volume, period=self.p.p_period_volume, plot=False))
             # 卖出条件
-            self.inds[d]['sell_con'] = d.close < bt.ind.SMA(d.close, period=self.p.p_sell_ma)
+            self.inds[d]['sell_cond'] = d.close < bt.ind.SMA(d.close, period=self.p.p_sell_ma)
             # 跳过第一只股票data，第一只股票data作为主图数据
             if i > 0:
                 if self.p.p_oneplot:
@@ -62,9 +62,9 @@ class OptimizeStrategy(bt.Strategy):
             dt, dn = self.datetime.date(), d._name  # 获取时间及股票代码
             pos = self.getposition(d).size
             if not pos:  # 不在场内，则可以买入
-                if self.inds[d]['buy_con']:  # 如果金叉
+                if self.inds[d]['buy_cond']:  # 如果金叉
                     self.buy(data=d, size=self.p.pstake)  # 买买买
-            elif self.inds[d]['sell_con']:  # 在场内，且死叉
+            elif self.inds[d]['sell_cond']:  # 在场内，且死叉
                 self.close(data=d)  # 卖卖卖
 
     def notify_trade(self, trade):
