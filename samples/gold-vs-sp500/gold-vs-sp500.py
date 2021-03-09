@@ -32,16 +32,20 @@ import scipy.stats
 import backtrader as bt
 
 
-class PearsonR(bt.ind.PeriodN):
-    _mindatas = 2  # hint to the platform
+class PearsonR(bt.ind.PeriodN):  # 注意：这里继承了bt.ind.PeriodN
+    _mindatas = 2  # hint to the platform,至少需要两份数据
 
-    lines = ('correlation',)
+    lines = ('correlation',)  # 自定义的线
     params = (('period', 20),)
 
     def next(self):
+        # 计算一段时间内的两份数据的相关系数
+        # 1.利用get(size=self.p.period)获取一段时间内的数据
+        # 2.利用scipy.stats.pearsonr获取相关系数
         c, p = scipy.stats.pearsonr(self.data0.get(size=self.p.period),
                                     self.data1.get(size=self.p.period))
 
+        # 定义相关线
         self.lines.correlation[0] = c
 
 
@@ -53,8 +57,11 @@ class MACrossOver(bt.Strategy):
     )
 
     def __init__(self):
+        # 计算data0的ma，并且单独绘图
         ma1 = self.p.ma(self.data0, period=self.p.pd1, subplot=True)
+        # 计算data1的ma，并且在data0的图上绘图
         self.p.ma(self.data1, period=self.p.pd2, plotmaster=ma1)
+        # 计算相关系数
         PearsonR(self.data0, self.data1)
 
 
@@ -73,6 +80,7 @@ def runstrat(args=None):
             strpfmt = dtfmt + tmfmt * ('T' in a)
             kwargs[d] = datetime.datetime.strptime(a, strpfmt)
 
+    # 选择不同的数据获取方式
     if not args.offline:
         YahooData = bt.feeds.YahooFinanceData
     else:
@@ -81,11 +89,13 @@ def runstrat(args=None):
     # Data feeds
     data0 = YahooData(dataname=args.data0, **kwargs)
     # cerebro.adddata(data0)
-    cerebro.resampledata(data0, timeframe=bt.TimeFrame.Weeks)
+    cerebro.resampledata(data0, timeframe=bt.TimeFrame.Weeks)  # 在resampledata的情况下，不需要adddata
 
     data1 = YahooData(dataname=args.data1, **kwargs)
     # cerebro.adddata(data1)
     cerebro.resampledata(data1, timeframe=bt.TimeFrame.Weeks)
+
+    # 指定plotmaster,注意看上面的init部分，也包含了plotinfo.plotmaster
     data1.plotinfo.plotmaster = data0
 
     # Broker
@@ -101,6 +111,7 @@ def runstrat(args=None):
         kwargs = eval('dict(' + args.strat + ')')
         cerebro.addstrategy(MACrossOver, **kwargs)
 
+    # 添加observer
     cerebro.addobserver(bt.observers.LogReturns2,
                         timeframe=bt.TimeFrame.Weeks,
                         compression=20)
