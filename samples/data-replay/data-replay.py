@@ -41,6 +41,7 @@ class SMAStrategy(bt.Strategy):
         self.counter = 0
 
     def prenext(self):
+        # 在满足next最小期之前会在此次计算
         self.counter += 1
         print('prenext len %d - counter %d' % (len(self), self.counter))
 
@@ -73,14 +74,14 @@ def runstrat():
 
     # Handy dictionary for the argument timeframe conversion
     # Resample the data
-    if args.oldrp:
+    if args.oldrp:  # 老接口的调用方式
         data = bt.DataReplayer(
             dataname=data,
             timeframe=tframes[args.timeframe],
             compression=args.compression)
     else:
         data.replay(
-            timeframe=tframes[args.timeframe],
+            timeframe=tframes[args.timeframe],  # 默认是weekly,所以一根bar上数据重复了5次
             compression=args.compression)
 
     # First add the original data - smaller timeframe
@@ -108,7 +109,7 @@ def parse_args():
                         help='Timeframe to resample to')
 
     parser.add_argument('--compression', default=1, required=False, type=int,
-                        help='Compress n bars into 1')
+                        help='Compress n bars into 1')  # 压缩，即把N个bar压缩为1条
 
     parser.add_argument('--period', default=10, required=False, type=int,
                         help='Period to apply to indicator')
