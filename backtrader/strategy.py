@@ -109,7 +109,7 @@ class Strategy(with_metaclass(MetaStrategy, StrategyBase)):
     Base class to be subclassed for user defined strategies.
     '''
 
-    _ltype = LineIterator.StratType
+    _ltype = LineIterator.StratType  # LineIterator的StratType,_next执行方式不同
 
     csv = True
     _oldsync = False  # update clock using old methodology : data 0
@@ -711,6 +711,16 @@ class Strategy(with_metaclass(MetaStrategy, StrategyBase)):
             allow=allow,
             tzdata=tzdata, strats=False, cheat=cheat,
             *args, **kwargs)
+    ################################################
+    # 一组notify
+    # 1.notify_timer
+    # 2.notify_cashvalue
+    # 3.notify_fund
+    # 4.notify_order
+    # 5.notify_trade
+    # 6.notify_store
+    # 7.notify_data
+    ################################################
 
     def notify_timer(self, timer, when, *args, **kwargs):
         '''Receives a timer notification where ``timer`` is the timer which was
@@ -749,28 +759,41 @@ class Strategy(with_metaclass(MetaStrategy, StrategyBase)):
 
     def notify_store(self, msg, *args, **kwargs):
         '''Receives a notification from a store provider'''
+        # 如果某个参数不被broker所接受,那么order也将不被broker接受。订单被拒的原因将通过Strategy的notify_store方法通知用户
         pass
 
     def notify_data(self, data, status, *args, **kwargs):
         '''Receives a notification from data'''
         pass
 
+    ################
+    # 数据集名称
+    ################
     def getdatanames(self):
         '''
         Returns a list of the existing data names
+        获取全部的数据集名称
         '''
         return keys(self.env.datasbyname)
 
     def getdatabyname(self, name):
         '''
         Returns a given data by name using the environment (cerebro)
+
+        self.env是指cerebro
         '''
         return self.env.datasbyname[name]
 
+    #########################################
+    # 针对order的操作，cancel/notify_order
+    ########################################
     def cancel(self, order):
         '''Cancels the order in the broker'''
         self.broker.cancel(order)
 
+    ################
+    # buy,sell,close
+    ################
     def buy(self, data=None,
             size=None, price=None, plimit=None,
             exectype=None, valid=None, tradeid=0, oco=None,
@@ -923,6 +946,8 @@ class Strategy(with_metaclass(MetaStrategy, StrategyBase)):
           - the submitted order
 
         '''
+
+        # 可以通过数据集的名称访问数据
         if isinstance(data, string_types):
             data = self.getdatabyname(data)
 
@@ -1244,6 +1269,12 @@ class Strategy(with_metaclass(MetaStrategy, StrategyBase)):
 
         return [o, ostop, olimit]
 
+    ################################################
+    # 仓位平衡操作
+    # 1.order_target_size
+    # 2.order_target_value
+    # 3.order_target_percent
+    ################################################
     def order_target_size(self, data=None, target=0, **kwargs):
         '''
         Place an order to rebalance a position to have final size of ``target``
@@ -1375,6 +1406,11 @@ class Strategy(with_metaclass(MetaStrategy, StrategyBase)):
 
         return self.order_target_value(data=data, target=target, **kwargs)
 
+    ################################################
+    # 获取不同broker的持仓头寸,可以通过数据集的name来获取
+    # broker.getposition
+    # broker.positions
+    ################################################
     def getposition(self, data=None, broker=None):
         '''
         Returns the current position for a given data in a given broker.
@@ -1435,6 +1471,9 @@ class Strategy(with_metaclass(MetaStrategy, StrategyBase)):
 
     positionsbyname = property(getpositionsbyname)
 
+    ################################################
+    # sizer
+    ################################################
     def _addsizer(self, sizer, *args, **kwargs):
         if sizer is None:
             self.setsizer(bt.sizers.FixedSize())

@@ -295,7 +295,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
         self.stores = list()
         self.feeds = list()
         self.datas = list()
-        self.datasbyname = collections.OrderedDict()
+        self.datasbyname = collections.OrderedDict() # 这是一个dict
         self.strats = list()
         self.optcbs = list()  # holds a list of callbacks for opt strategies
         self.observers = list()
